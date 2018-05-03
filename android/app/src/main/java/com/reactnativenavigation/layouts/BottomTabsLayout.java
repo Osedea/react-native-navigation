@@ -1,5 +1,7 @@
 package com.reactnativenavigation.layouts;
 
+import com.reactnativenavigation.R;
+import android.graphics.Color;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,6 +10,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.LayoutInflater;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -44,6 +48,7 @@ import com.reactnativenavigation.views.slidingOverlay.SlidingOverlay;
 import com.reactnativenavigation.views.slidingOverlay.SlidingOverlaysQueue;
 
 import java.util.List;
+import java.lang.Runnable;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -81,10 +86,33 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
         createSnackbarContainer();
         showInitialScreenStack();
         setInitialTabIndex();
+        createOverlay();
     }
 
     private void setInitialTabIndex() {
         bottomTabs.setCurrentItem(AppStyle.appStyle.bottomTabsInitialIndex);
+    }
+
+    private void createOverlay() {
+        final View splash = LayoutInflater.from(getContext()).inflate(R.layout.launch_screen, null);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT);
+        splash.setBackgroundColor(Color.parseColor("#272942"));
+
+        bottomTabs.setVisibility(true, false);
+        getScreenStackParent().addView(splash, 0, lp);
+        getScreenStackParent().bringChildToFront(splash);
+
+        new android.os.Handler().postDelayed(
+            new Runnable() {
+                public void run() {
+                    getScreenStackParent().removeView(splash);
+                    bottomTabs.setVisibility(false, true);
+                }
+            },
+        2500);
     }
 
     private void createSideMenu() {
