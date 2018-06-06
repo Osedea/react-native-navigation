@@ -22,6 +22,7 @@ import com.reactnativenavigation.params.ActivityParams;
 import com.reactnativenavigation.params.AppStyle;
 import com.reactnativenavigation.params.ContextualMenuParams;
 import com.reactnativenavigation.params.FabParams;
+import com.reactnativenavigation.params.NavigationParams;
 import com.reactnativenavigation.params.LightBoxParams;
 import com.reactnativenavigation.params.ScreenParams;
 import com.reactnativenavigation.params.SideMenuParams;
@@ -35,6 +36,7 @@ import com.reactnativenavigation.screens.Screen;
 import com.reactnativenavigation.screens.ScreenStack;
 import com.reactnativenavigation.utils.Task;
 import com.reactnativenavigation.utils.ViewUtils;
+import com.reactnativenavigation.views.ContentView;
 import com.reactnativenavigation.views.BottomTabs;
 import com.reactnativenavigation.views.LightBox;
 import com.reactnativenavigation.views.SideMenu;
@@ -81,6 +83,7 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
         createSnackbarContainer();
         showInitialScreenStack();
         setInitialTabIndex();
+        setOverlay();
     }
 
     private void setInitialTabIndex() {
@@ -224,6 +227,72 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
     public void setFab(String screenInstanceId, String navigatorEventId, FabParams fabParams) {
         for (int i = 0; i < bottomTabs.getItemsCount(); i++) {
             screenStacks[i].setFab(screenInstanceId, fabParams);
+        }
+    }
+
+    public void setOverlay() {
+        if (params.overlayParams != null) {
+            ContentView overlayView = new ContentView(getContext(), params.overlayParams.getString("screen"), NavigationParams.EMPTY);
+            // Default layout
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT);
+
+            if (params.overlayParams.getBundle("style") != null) {
+                Bundle style = params.overlayParams.getBundle("style");
+
+                if (style.getInt("width") != 0 && style.getInt("height") != 0) {
+                    lp = new RelativeLayout.LayoutParams(
+                        style.getInt("width"),
+                        style.getInt("height")
+                    );
+                } else if (style.getInt("width") != 0 && style.getInt("height") == 0) {
+                    lp = new RelativeLayout.LayoutParams(
+                        style.getInt("width"),
+                        RelativeLayout.LayoutParams.MATCH_PARENT);
+                } else if (style.getInt("width") == 0 && style.getInt("height") != 0) {
+                    lp = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT,
+                        style.getInt("height"));
+                }
+
+                if (style.getString("align") != null) {
+                    if (style.getString("align").equals("bottom")) {
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    }
+                    if (style.getString("align").equals("top")) {
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                    }
+                    if (style.getString("align").equals("left")) {
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    }
+                    if (style.getString("align").equals("right")) {
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    }
+                    if (style.getString("align").equals("start")) {
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_START);
+                    }
+                    if (style.getString("align").equals("end")) {
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_END);
+                    }
+                }
+
+                if (style.getInt("marginBottom") != 0) {
+                    lp.bottomMargin = style.getInt("marginBottom");
+                }
+                if (style.getInt("marginTop") != 0) {
+                    lp.topMargin = style.getInt("marginTop");
+                }
+                if (style.getInt("marginLeft") != 0) {
+                    lp.leftMargin = style.getInt("marginLeft");
+                }
+                if (style.getInt("marginRight") != 0) {
+                    lp.rightMargin = style.getInt("marginRight");
+                }
+            }
+
+            getScreenStackParent().addView(overlayView, -1, lp);
+            getScreenStackParent().bringChildToFront(overlayView);
         }
     }
 
