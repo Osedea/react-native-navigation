@@ -18,6 +18,10 @@ public class ActivityParamsParser extends Parser {
             result.screenParams = ScreenParamsParser.parse(params.getBundle("screen"));
         }
 
+        if (hasKey(params, "overlay")) {
+            result.overlayParams = params.getBundle("overlay");
+        }
+
         if (hasKey(params, "tabs")) {
             result.type = ActivityParams.Type.TabBased;
             result.tabParams = new ScreenParamsParser().parseTabs(params.getBundle("tabs"));
