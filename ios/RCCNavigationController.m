@@ -63,7 +63,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
     
     
     [self setRotation:props];
-    
+
     NSArray* components = props[@"components"];
     if (components.count) {
         for (NSDictionary* component in components) {

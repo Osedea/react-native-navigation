@@ -11,6 +11,7 @@
 #import "RCTHelpers.h"
 #import "RCCTitleViewHelper.h"
 #import "RCCCustomTitleView.h"
+#import "RCCOverlayView.h"
 
 
 NSString* const RCCViewControllerCancelReactTouchesNotification = @"RCCViewControllerCancelReactTouchesNotification";
@@ -69,6 +70,86 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
     // tab bar controller
     if ([type isEqualToString:@"TabBarControllerIOS"]) {
         controller = [[RCCTabBarController alloc] initWithProps:props children:children globalProps:globalProps bridge:bridge];
+        
+        NSString *overlayScreenID = props[@"overlay"][@"screen"];
+        if (overlayScreenID) {
+            CGRect frame = controller.view.bounds;
+            NSMutableDictionary *style = props[@"overlay"][@"style"];
+            if (style) {
+                if (style[@"height"]) {
+                    frame.size.height = [style[@"height"] intValue];
+                }
+                if (style[@"width"]) {
+                    frame.size.width = [style[@"width"] intValue];
+                }
+                if (style[@"align"]) {
+                    if ([style[@"align"] isEqualToString:@"bottom"]) {
+                        frame.origin.y = controller.view.bounds.size.height - frame.size.height;
+                    }
+                    if ([style[@"align"] isEqualToString:@"top"] || [style[@"align"] isEqualToString:@"left"]) {
+                        // That's the default
+                    }
+                    if ([style[@"align"] isEqualToString:@"right"]) {
+                        frame.origin.x = controller.view.bounds.size.width - frame.size.width;
+                    }
+                    if ([style[@"align"] isEqualToString:@"start"]) {
+                        NSLog(@"align:start might not give you the result that you want. It is right now equivalent to align:top");
+                        // That's the default
+                    }
+                    if ([style[@"align"] isEqualToString:@"end"]) {
+                        NSLog(@"align:end might not give you the result that you want. It is right now equivalent to align:bottom");
+                        frame.origin.y = controller.view.bounds.size.height - frame.size.height;
+                    }
+                }
+                if (style[@"marginTop"]) {
+                    if (style[@"height"] == NULL) {
+                        frame.size.height = frame.size.height - [style[@"marginTop"] intValue];
+                        if ([style[@"align"] isEqualToString:@"bottom"]) {
+                            frame.origin.y = [style[@"marginTop"] intValue];
+                        }
+                    }
+                    if (![style[@"align"] isEqualToString:@"bottom"] && ![style[@"align"] isEqualToString:@"end"]) {
+                        frame.origin.y = [style[@"marginTop"] intValue];
+                    }
+                }
+                if (style[@"marginBottom"]) {
+                    if (style[@"height"] == NULL) {
+                        frame.size.height = frame.size.height - [style[@"marginBottom"] intValue];
+                    } else {
+                        if ([style[@"align"] isEqualToString:@"bottom"] || [style[@"align"] isEqualToString:@"end"]) {
+                            frame.origin.y = controller.view.bounds.size.height - frame.size.height - [style[@"marginBottom"] intValue];
+                        }
+                    }
+                }
+                if (style[@"marginLeft"]) {
+                    if (!style[@"width"]) {
+                        frame.size.width = frame.size.width - [style[@"marginLeft"] intValue];
+                        
+                        if ([style[@"align"] isEqualToString:@"right"]) {
+                            frame.origin.x = frame.origin.x + [style[@"marginLeft"] intValue];
+                        }
+                    }
+                    if (![style[@"align"] isEqualToString:@"right"]) {
+                        frame.origin.x = frame.origin.x + [style[@"marginLeft"] intValue];
+                    }
+                }
+                if (style[@"marginRight"]) {
+                    if (!style[@"width"]) {
+                        frame.size.width = frame.size.width - [style[@"marginRight"] intValue];
+                    }
+                    if (![style[@"align"] isEqualToString:@"left"] && style[@"align"] != NULL) {
+                        if (!style[@"marginLeft"]) {
+                            frame.origin.x = frame.origin.x - [style[@"marginRight"] intValue];
+                        }
+                    }
+
+                }
+            }
+            
+            UIView *overlayView = [[RCCOverlayView alloc] initWithComponentNameAndFrame:props[@"overlay"][@"screen"] passProps:props[@"overlay"][@"passProps"] bridge:bridge frame:frame];
+            
+            [controller.view insertSubview:overlayView belowSubview:((UITabBarController *) controller).tabBar];
+        }
     }
     
     // side menu controller
