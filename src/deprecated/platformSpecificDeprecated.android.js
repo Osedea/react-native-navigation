@@ -1,6 +1,6 @@
 /*eslint-disable*/
 import React, {Component} from 'react';
-import ReactNative, {AppRegistry, NativeModules, processColor} from 'react-native';
+import ReactNative, {AppRegistry, NativeModules, processColor, PixelRatio} from 'react-native';
 import _ from 'lodash';
 import PropRegistry from './../PropRegistry';
 
@@ -150,6 +150,37 @@ function adaptNavigationStyleToScreenStyle(screen) {
   screen.styleParams = convertStyleParams(navigatorStyle);
 
   return _.omit(screen, ['navigatorStyle']);
+}
+
+function convertOverlayStyleParams(originalParams) {
+  if (!originalParams) {
+    return null;
+  }
+
+  const newParams = {};
+  if (originalParams.height) {
+    newParams.height = PixelRatio.getPixelSizeForLayoutSize(originalParams.height);
+  }
+  if (originalParams.width) {
+    newParams.width = PixelRatio.getPixelSizeForLayoutSize(originalParams.width);
+  }
+  if (originalParams.marginTop) {
+    newParams.marginTop = PixelRatio.getPixelSizeForLayoutSize(originalParams.marginTop);
+  }
+  if (originalParams.marginBottom) {
+    newParams.marginBottom = PixelRatio.getPixelSizeForLayoutSize(originalParams.marginBottom);
+  }
+  if (originalParams.marginLeft) {
+    newParams.marginLeft = PixelRatio.getPixelSizeForLayoutSize(originalParams.marginLeft);
+  }
+  if (originalParams.marginRight) {
+    newParams.marginRight = PixelRatio.getPixelSizeForLayoutSize(originalParams.marginRight);
+  }
+
+  return {
+    ...originalParams,
+    ...newParams,
+  };
 }
 
 function convertStyleParams(originalStyleObject) {
@@ -336,6 +367,10 @@ async function startTabBasedApp(params) {
   }
   params.sideMenu = convertDrawerParamsToSideMenuParams(params.drawer);
   params.animateShow = convertAnimationType(params.animationType);
+
+  if (params.overlay && params.overlay.style) {
+    params.overlay.style = convertOverlayStyleParams(params.overlay.style);
+  }
 
   return await newPlatformSpecific.startApp(params);
 }
