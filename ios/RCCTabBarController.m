@@ -1,5 +1,6 @@
 #import "RCCTabBarController.h"
 #import "RCCViewController.h"
+#import "RCCOverlayView.h"
 #import <React/RCTConvert.h>
 #import "RCCManager.h"
 #import "RCTHelpers.h"
@@ -379,6 +380,15 @@
     }
 }
 
+- (void) viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    RCCOverlayView* overlayView = (RCCOverlayView*) self.overlayView;
+    
+    if (overlayView && [overlayView isKindOfClass:[RCCOverlayView class]]) {
+        [overlayView viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    }
+}
 
 
 @end

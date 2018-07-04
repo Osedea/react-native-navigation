@@ -148,6 +148,10 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
             
             UIView *overlayView = [[RCCOverlayView alloc] initWithComponentNameAndFrame:props[@"overlay"][@"screen"] passProps:props[@"overlay"][@"passProps"] bridge:bridge frame:frame];
             
+            RCCTabBarController *tabBarController = (RCCTabBarController *) controller;
+            
+            tabBarController.overlayView = overlayView;
+
             [controller.view insertSubview:overlayView belowSubview:((UITabBarController *) controller).tabBar];
         }
     }
