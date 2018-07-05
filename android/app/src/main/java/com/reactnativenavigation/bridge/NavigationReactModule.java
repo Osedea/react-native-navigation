@@ -281,4 +281,14 @@ public class NavigationReactModule extends ReactContextBaseJavaModule {
     public void getLaunchArgs(Promise promise) {
         NavigationCommandsHandler.getLaunchArgs(promise);
     }
+
+    @ReactMethod
+    public void showOverlay() {
+        NavigationCommandsHandler.showOverlay();
+    }
+
+    @ReactMethod
+    public void dismissOverlay() {
+        NavigationCommandsHandler.dismissOverlay();
+    }
 }
