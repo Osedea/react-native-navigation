@@ -186,6 +186,14 @@ async function getLaunchArgs() {
   return await platformSpecific.getLaunchArgs();
 }
 
+function showOverlay() {
+  return platformSpecific.showOverlay();
+}
+
+function dismissOverlay() {
+  return platformSpecific.dismissOverlay();
+}
+
 export default {
   getRegisteredScreen,
   getCurrentlyVisibleScreenId,
@@ -205,5 +213,7 @@ export default {
   handleDeepLink: handleDeepLink,
   isAppLaunched: isAppLaunched,
   isRootLaunched: isRootLaunched,
-  getLaunchArgs
+  getLaunchArgs,
+  showOverlay,
+  dismissOverlay,
 };

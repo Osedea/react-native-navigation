@@ -203,6 +203,14 @@ class Navigator {
     }
     return res.screenId === this.screenInstanceID;
   }
+
+  showOverlay() {
+    return platformSpecific.showOverlay();
+  }
+
+  dismissOverlay() {
+    return platformSpecific.dismissOverlay();
+  }
 }
 
 class Screen extends Component {
