@@ -84,7 +84,6 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
         createSnackbarContainer();
         showInitialScreenStack();
         setInitialTabIndex();
-        setOverlay();
     }
 
     private void setInitialTabIndex() {
@@ -686,7 +685,7 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
 
     @Override
     public void showOverlay() {
-        if (overlayView != null) {
+        if (overlayView == null) {
             setOverlay();
         }
     }
