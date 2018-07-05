@@ -70,4 +70,8 @@ public interface Layout extends ScreenStackContainer {
     void updateScreenStyle(String screenInstanceId, Bundle styleParams);
 
     String getCurrentlyVisibleScreenId();
+
+    void showOverlay();
+
+    void dismissOverlay();
 }

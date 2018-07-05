@@ -348,4 +348,14 @@ public class SingleScreenLayout extends BaseLayout {
             sideMenu.openDrawer(Side.Left);
         }
     }
+
+    @Override
+    public void showOverlay() {
+
+    }
+
+    @Override
+    public void dismissOverlay() {
+
+    }
 }

@@ -65,6 +65,7 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
     SideMenu sideMenu;
     private int currentStackIndex = 0;
     private LightBox lightBox;
+    private ContentView overlayView;
 
     public BottomTabsLayout(AppCompatActivity activity, ActivityParams params) {
         super(activity);
@@ -232,7 +233,7 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
 
     public void setOverlay() {
         if (params.overlayParams != null) {
-            ContentView overlayView = new ContentView(getContext(), params.overlayParams.getString("screen"), NavigationParams.EMPTY);
+            overlayView = new ContentView(getContext(), params.overlayParams.getString("screen"), NavigationParams.EMPTY);
             // Default layout
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -681,5 +682,18 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
         if (sideMenu != null) {
             sideMenu.openDrawer(Side.Left);
         }
+    }
+
+    @Override
+    public void showOverlay() {
+        if (overlayView != null) {
+            setOverlay();
+        }
+    }
+
+    @Override
+    public void dismissOverlay() {
+        getScreenStackParent().removeView(overlayView);
+        overlayView = null;
     }
 }

@@ -438,6 +438,20 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
         }
     }
 
+    public void showOverlay() {
+        if (activityParams.type == ActivityParams.Type.TabBased) {
+            BottomTabsLayout btl = (BottomTabsLayout)layout;
+            layout.showOverlay();
+        }
+    }
+
+    public void dismissOverlay() {
+        if (activityParams.type == ActivityParams.Type.TabBased) {
+            BottomTabsLayout btl = (BottomTabsLayout)layout;
+            layout.dismissOverlay();
+        }
+    }
+
     @Override
     public void onEvent(Event event) {
         if (event.getType().equals(ModalDismissedEvent.TYPE)) {

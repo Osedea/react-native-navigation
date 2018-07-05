@@ -553,4 +553,32 @@ public class NavigationCommandsHandler {
         Bundle bundle = LaunchArgs.instance.get();
         promise.resolve(Arguments.fromBundle(bundle));
     }
+
+    public static void showOverlay() {
+        final NavigationActivity currentActivity = NavigationActivity.currentActivity;
+        if (currentActivity == null) {
+            return;
+        }
+
+        NavigationApplication.instance.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                currentActivity.showOverlay();
+            }
+        });
+    }
+
+    public static void dismissOverlay() {
+        final NavigationActivity currentActivity = NavigationActivity.currentActivity;
+        if (currentActivity == null) {
+            return;
+        }
+
+        NavigationApplication.instance.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                currentActivity.dismissOverlay();
+            }
+        });
+    }
 }
