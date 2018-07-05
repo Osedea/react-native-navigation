@@ -202,6 +202,14 @@ async function getLaunchArgs() {
   return await NativeReactModule.getLaunchArgs();
 }
 
+function showOverlay() {
+  NativeReactModule.showOverlay();
+}
+
+function dismissOverlay() {
+  NativeReactModule.dismissOverlay();
+}
+
 module.exports = {
   startApp,
   push,
@@ -239,5 +247,7 @@ module.exports = {
   isAppLaunched,
   isRootLaunched,
   getCurrentlyVisibleScreenId,
-  getLaunchArgs
+  getLaunchArgs,
+  showOverlay,
+  dismissOverlay,
 };

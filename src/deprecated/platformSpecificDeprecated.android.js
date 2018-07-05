@@ -850,6 +850,14 @@ async function getLaunchArgs() {
   return await newPlatformSpecific.getLaunchArgs();
 }
 
+function showOverlay() {
+  newPlatformSpecific.showOverlay();
+}
+
+function dismissOverlay() {
+  newPlatformSpecific.dismissOverlay();
+}
+
 export default {
   startTabBasedApp,
   startSingleScreenApp,
@@ -883,5 +891,7 @@ export default {
   isAppLaunched,
   isRootLaunched,
   getCurrentlyVisibleScreenId,
-  getLaunchArgs
+  getLaunchArgs,
+  showOverlay,
+  dismissOverlay,
 };
