@@ -253,6 +253,12 @@ var Controllers = {
 
   TabBarControllerIOS: function (id) {
     return {
+      showOverlay: function (params) {
+        return RCCManager.TabBarControllerIOS(id, "showOverlay", params);
+      },
+      dismissOverlay: function (params) {
+        return RCCManager.TabBarControllerIOS(id, "dismissOverlay", params);
+      },
       setHidden: function (params) {
         return RCCManager.TabBarControllerIOS(id, "setTabBarHidden", params);
       },

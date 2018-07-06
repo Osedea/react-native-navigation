@@ -8,6 +8,7 @@ import PropRegistry from './PropRegistry';
 
 const registeredScreens = {};
 const _allNavigatorEventHandlers = {};
+let firstTabControllerID = null;
 
 function registerScreen(screenID, generator) {
   registeredScreens[screenID] = generator;
@@ -133,7 +134,13 @@ function dismissInAppNotification(params = {}) {
 
 async function startTabBasedApp(params) {
   try {
-    return await platformSpecific.startTabBasedApp(params);
+    const tabControllerID = await platformSpecific.startTabBasedApp(params);
+
+    if (firstTabControllerID == null) {
+      firstTabControllerID = tabControllerID;
+    }
+
+    return tabControllerID;
   } catch(e) {
     console.error(`Error while starting app: ${e}`);
   }
@@ -187,11 +194,11 @@ async function getLaunchArgs() {
 }
 
 function showOverlay() {
-  return platformSpecific.showOverlay();
+  return platformSpecific.showOverlay(firstTabControllerID);
 }
 
 function dismissOverlay() {
-  return platformSpecific.dismissOverlay();
+  return platformSpecific.dismissOverlay(firstTabControllerID);
 }
 
 export default {
