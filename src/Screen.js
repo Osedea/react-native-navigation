@@ -159,7 +159,7 @@ class Navigator {
     this._registerNavigatorEvent();
 
     return () => this._removeOnNavigatorEvent(callback)
-    
+
   }
 
   _registerNavigatorEvent() {
@@ -205,11 +205,15 @@ class Navigator {
   }
 
   showOverlay() {
-    return platformSpecific.showOverlay();
+    const controllerID = this.navigatorID.split('_')[0];
+
+    return platformSpecific.showOverlay(controllerID);
   }
 
   dismissOverlay() {
-    return platformSpecific.dismissOverlay();
+    const controllerID = this.navigatorID.split('_')[0];
+
+    return platformSpecific.dismissOverlay(controllerID);
   }
 }
 

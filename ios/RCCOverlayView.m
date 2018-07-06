@@ -5,16 +5,15 @@
 
 @implementation RCCOverlayView
 
-- (instancetype)initWithComponentNameAndFrame:(NSString *__nonnull)component passProps:(NSDictionary *)passProps bridge:(RCTBridge *__nonnull)bridge frame:(CGRect) frame {
+- (instancetype)initWithProps:(NSDictionary *)overlayProps bridge:(RCTBridge *)bridge {
+    if (self = [super init]) {
+        self.translatesAutoresizingMaskIntoConstraints = NO;
 
-    if (self = [super initWithFrame:frame]) {
-        RCTRootView *reactView = [[RCTRootView alloc] initWithBridge:bridge moduleName:component initialProperties:passProps];
+        self.overlayProps = overlayProps;
+        
+        RCTRootView *reactView = [[RCTRootView alloc] initWithBridge:bridge moduleName:overlayProps[@"screen"] initialProperties:overlayProps[@"passProps"]];
+
         self.subView = reactView;
-        self.backgroundColor = [UIColor clearColor];
-
-        reactView.backgroundColor = [UIColor clearColor];
-
-        [reactView setFrame:self.bounds];
 
         [self addSubview:reactView];
     }
@@ -22,19 +21,80 @@
     return self;
 }
 
-- (void)layoutSubviews {
-    [super layoutSubviews];
+-(void)didMoveToSuperview {
+    [self setupViewConstraints:self.overlayProps];
+}
+
+- (void)setupViewConstraints:(NSDictionary *)overlayProps {
+    NSDictionary *style = overlayProps[@"style"];
+    if (style == nil) {
+        style = [[NSDictionary alloc] init];
+    }
     
-    if (self.subView) {
-        [self.subView setFrame:self.bounds];
+    self.translatesAutoresizingMaskIntoConstraints = NO; // So that we can apply the constraints below ourselves
+    self.subView.translatesAutoresizingMaskIntoConstraints = YES; // Let the subview flexibly fill the parent
+    self.subView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
+    if (style[@"height"]) {
+        CGFloat height = [[style objectForKey:@"height"] doubleValue];
+        NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:height];
+        constraint.active = YES;
+    } else if (self.superview) {
+        NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeHeight multiplier:1.0 constant:0.0];
+        constraint.active = YES;
+    }
+    
+    if (style[@"width"]) {
+        CGFloat width = [[style objectForKey:@"width"] doubleValue];
+        NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:width];
+        constraint.active = YES;
+    } else if (self.superview) {
+        NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0.0];
+        constraint.active = YES;
+    }
+    
+    if (self.superview) {
+        NSString *align = style[@"align"];
+        if (align == nil) {
+            align = @"top";
+        }
+        
+        if (style[@"marginBottom"]) {
+            CGFloat margin = [[style objectForKey:@"marginBottom"] doubleValue];
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1.0 constant:margin];
+            constraint.active = YES;
+        } else if ([align isEqualToString:@"bottom"]) {
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
+            constraint.active = YES;
+        }
+        
+        if (style[@"marginTop"]) {
+            CGFloat margin = [[style objectForKey:@"marginTop"] doubleValue];
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1.0 constant:margin];
+            constraint.active = YES;
+        } else if ([align isEqualToString:@"top"]) {
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0];
+            constraint.active = YES;
+        }
+        
+        if (style[@"marginLeft"]) {
+            CGFloat margin = [[style objectForKey:@"marginLeft"] doubleValue];
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1.0 constant:margin];
+            constraint.active = YES;
+        } else if ([align isEqualToString:@"left"]) {
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0];
+            constraint.active = YES;
+        }
+        
+        if (style[@"marginRight"]) {
+            CGFloat margin = [[style objectForKey:@"marginRight"] doubleValue];
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1.0 constant:margin];
+            constraint.active = YES;
+        } else if ([align isEqualToString:@"right"]) {
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1.0 constant:0.0];
+            constraint.active = YES;
+        }
     }
 }
-
-- (void) viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    CGRect frame = self.frame;
-    frame.size.width = size.width;
-    [self setFrame:frame];
-}
-
 
 @end
