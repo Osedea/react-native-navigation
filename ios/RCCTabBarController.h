@@ -8,6 +8,5 @@
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator;
 
 @property (nonatomic) BOOL tabBarHidden;
-@property (nonatomic) UIView *overlayView;
 
 @end

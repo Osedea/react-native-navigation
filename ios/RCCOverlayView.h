@@ -5,8 +5,8 @@
 @interface RCCOverlayView : UIView
 
 @property (nonatomic, strong) RCTRootView *subView;
+@property (nonatomic, strong) NSDictionary *overlayProps;
 
-- (__nonnull instancetype)initWithComponentNameAndFrame:(NSString *__nonnull)component passProps:(NSDictionary *__nullable)passProps bridge:(RCTBridge *__nonnull)bridge frame:(CGRect)frame;
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator;
+- (instancetype)initWithProps:(NSDictionary *)overlayProps bridge:(RCTBridge *)bridge;
 
 @end

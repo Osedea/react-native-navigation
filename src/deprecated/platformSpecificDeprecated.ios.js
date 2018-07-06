@@ -38,7 +38,7 @@ async function startTabBasedApp(params) {
 
       components.forEach(component => {
         const screenInstanceID = _.uniqueId('screenInstanceID');
-  
+
         const {
           navigatorStyle,
           navigatorButtons,
@@ -50,8 +50,8 @@ async function startTabBasedApp(params) {
         passProps.navigatorID = navigatorID;
         passProps.screenInstanceID = screenInstanceID;
         passProps.navigatorEventID = navigatorEventID;
-  
-  
+
+
         component.navigationParams = {
           screenInstanceID,
           navigatorStyle,
@@ -60,15 +60,15 @@ async function startTabBasedApp(params) {
           navigatorID: navigatorID,
           passProps
         };
-  
+
         component.subtitle = params.subtitle;
         component.passProps = passProps;
         component.navigatorStyle = navigatorStyle;
 
         savePassProps(component);
-  
+
       });
-        
+
     }
 
     const {
@@ -164,7 +164,8 @@ async function startTabBasedApp(params) {
   _.set(params, 'passProps.timestamp', Date.now());
 
   ControllerRegistry.registerController(controllerID, () => Controller);
-  return await ControllerRegistry.setRootController(controllerID, params.animationType, params.passProps || {});
+  await ControllerRegistry.setRootController(controllerID, params.animationType, params.passProps || {});
+  return controllerID;
 }
 
 async function startSingleScreenApp(params) {
@@ -787,6 +788,14 @@ async function getLaunchArgs() {
   return await ControllerRegistry.getLaunchArgs();
 }
 
+function showOverlay(controllerID) {
+  Controllers.TabBarControllerIOS(controllerID + '_tabs').showOverlay({});
+}
+
+function dismissOverlay(controllerID) {
+  Controllers.TabBarControllerIOS(controllerID + '_tabs').dismissOverlay({});
+}
+
 export default {
   startTabBasedApp,
   startSingleScreenApp,
@@ -816,5 +825,7 @@ export default {
   showContextualMenu,
   dismissContextualMenu,
   getCurrentlyVisibleScreenId,
-  getLaunchArgs
+  getLaunchArgs,
+  showOverlay,
+  dismissOverlay,
 };

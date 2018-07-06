@@ -217,6 +217,14 @@
 }
 
 - (void)performAction:(NSString*)performAction actionParams:(NSDictionary*)actionParams bridge:(RCTBridge *)bridge completion:(void (^)(void))completion {
+    if ([performAction isEqualToString:@"showOverlay"]) {
+        [self showOverlay:YES];
+    }
+    
+    if ([performAction isEqualToString:@"dismissOverlay"]) {
+        [self showOverlay:NO];
+    }
+    
     if ([performAction isEqualToString:@"setBadge"]) {
         UIViewController *viewController = nil;
         NSNumber *tabIndex = actionParams[@"tabIndex"];
@@ -380,13 +388,16 @@
     }
 }
 
-- (void) viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    
-    RCCOverlayView* overlayView = (RCCOverlayView*) self.overlayView;
-    
-    if (overlayView && [overlayView isKindOfClass:[RCCOverlayView class]]) {
-        [overlayView viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+- (void) showOverlay:(BOOL)show {
+    for (UIView * subview in self.view.subviews) {
+        if ([subview isKindOfClass:[RCCOverlayView class]]) {
+            RCCOverlayView* overlayView = (RCCOverlayView*) subview;
+            
+            if (overlayView) {
+                [overlayView setHidden:!show];
+            }
+        }
+        
     }
 }
 
