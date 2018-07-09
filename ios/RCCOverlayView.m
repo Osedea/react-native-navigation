@@ -8,10 +8,12 @@
 - (instancetype)initWithProps:(NSDictionary *)overlayProps bridge:(RCTBridge *)bridge {
     if (self = [super init]) {
         self.translatesAutoresizingMaskIntoConstraints = NO;
+        self.backgroundColor = [UIColor clearColor];
 
         self.overlayProps = overlayProps;
         
         RCTRootView *reactView = [[RCTRootView alloc] initWithBridge:bridge moduleName:overlayProps[@"screen"] initialProperties:overlayProps[@"passProps"]];
+        reactView.backgroundColor = [UIColor clearColor];
 
         self.subView = reactView;
 
@@ -21,11 +23,15 @@
     return self;
 }
 
--(void)didMoveToSuperview {
-    [self setupViewConstraints:self.overlayProps];
+- (void)setTabBarForBottomConstraint:(UITabBar *)tabBar {
+    self.tabBar = tabBar; // Will be used later in setupViewConstraints:
 }
 
-- (void)setupViewConstraints:(NSDictionary *)overlayProps {
+-(void)didMoveToSuperview {
+    [self setupViewConstraints:self.overlayProps bottomView:self.tabBar];
+}
+
+- (void)setupViewConstraints:(NSDictionary *)overlayProps bottomView:(UIView *)bottomView {
     NSDictionary *style = overlayProps[@"style"];
     if (style == nil) {
         style = [[NSDictionary alloc] init];
@@ -59,7 +65,11 @@
             align = @"top";
         }
         
-        if (style[@"marginBottom"]) {
+        if (bottomView) {
+            // Sticks the bottom of this overlay view to the top of the tab bar
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:bottomView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
+            constraint.active = YES;
+        } else if (style[@"marginBottom"]) {
             CGFloat margin = [[style objectForKey:@"marginBottom"] doubleValue];
             NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1.0 constant:margin];
             constraint.active = YES;
