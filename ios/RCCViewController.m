@@ -614,7 +614,7 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
     if (navBarCustomView && ![self.navigationItem.titleView isKindOfClass:[RCCCustomTitleView class]]) {
         if ([self.view isKindOfClass:[RCTRootView class]]) {
             
-            RCTBridge *bridge = ((RCTRootView*)self.view).bridge;
+            RCTBridge *bridge = ((RCTRootView*)self.rootView).bridge;
             
             NSDictionary *initialProps = self.navigatorStyle[@"navBarCustomViewInitialProps"];
             RCTRootView *reactView = [[RCTRootView alloc] initWithBridge:bridge moduleName:navBarCustomView initialProperties:initialProps];
