@@ -23,12 +23,8 @@
     return self;
 }
 
-- (void)setTabBarForBottomConstraint:(UITabBar *)tabBar {
-    self.tabBar = tabBar; // Will be used later in setupViewConstraints:
-}
-
--(void)didMoveToSuperview {
-    [self setupViewConstraints:self.overlayProps bottomView:self.tabBar];
+- (void)didMoveToSuperview {
+    [self setupViewConstraints:self.overlayProps bottomView:nil];
 }
 
 - (void)setupViewConstraints:(NSDictionary *)overlayProps bottomView:(UIView *)bottomView {
@@ -66,7 +62,7 @@
         }
         
         if (bottomView) {
-            // Sticks the bottom of this overlay view to the top of the tab bar
+            // Sticks the bottom of this overlay view to the top of this view
             NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:bottomView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
             constraint.active = YES;
         } else if (style[@"marginBottom"]) {
