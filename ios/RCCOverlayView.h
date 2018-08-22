@@ -9,6 +9,5 @@
 @property (nonatomic, strong) UITabBar *tabBar;
 
 - (instancetype)initWithProps:(NSDictionary *)overlayProps bridge:(RCTBridge *)bridge;
-- (void)setTabBarForBottomConstraint:(UITabBar *)tabBar;
 
 @end
