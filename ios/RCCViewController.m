@@ -73,7 +73,6 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
         
         if (props[@"overlay"]) {
             RCCOverlayView *overlayView = [[RCCOverlayView alloc] initWithProps:props[@"overlay"] bridge:bridge];
-            [overlayView setTabBarForBottomConstraint:((UITabBarController *) controller).tabBar];
             [overlayView setHidden:YES];
 
             [controller.view insertSubview:overlayView belowSubview:((UITabBarController *) controller).tabBar];
