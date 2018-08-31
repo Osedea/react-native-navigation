@@ -319,6 +319,36 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
     [self setStyleOnAppearForViewController:self appeared:true];
 }
 
+- (UIImage *)imageFromLayer:(CALayer *)layer
+{
+    UIGraphicsBeginImageContext([layer frame].size);
+    
+    [layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *outputImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return outputImage;
+}
+
+-(void)applyGradientStyle:(CGRect)frame {
+    UIViewController *viewController = self;
+    NSArray *navBarGradientColors = self.navigatorStyle[@"navBarGradientColors"];
+    
+    if (navBarGradientColors != (id)[NSNull null] && [navBarGradientColors isKindOfClass:[NSArray class]] && navBarGradientColors.count > 0) {
+        CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+        gradientLayer.bounds = frame;
+        gradientLayer.colors = @[];
+        for (int i = 0; i < navBarGradientColors.count; i++) {
+            UIColor *color = [RCTConvert UIColor:[navBarGradientColors objectAtIndex:i]];
+            gradientLayer.colors = [gradientLayer.colors arrayByAddingObject:(__bridge id) color.CGColor];
+        }
+        gradientLayer.startPoint = CGPointMake(0.0, 0.5);
+        gradientLayer.endPoint = CGPointMake(1.0, 0.5);
+        [viewController.navigationController.navigationBar setBackgroundImage:[self imageFromLayer:gradientLayer] forBarMetrics:UIBarMetricsDefault];
+    }
+}
+
 -(void)setStyleOnAppearForViewController:(UIViewController*)viewController appeared:(BOOL)appeared {
     NSString *screenBackgroundColor = self.navigatorStyle[@"screenBackgroundColor"];
     if (screenBackgroundColor) {
@@ -335,11 +365,16 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
     }
     
     NSString *navBarBackgroundColor = self.navigatorStyle[@"navBarBackgroundColor"];
+    NSArray *navBarGradientColors = self.navigatorStyle[@"navBarGradientColors"];
+    
+    if (navBarGradientColors != (id)[NSNull null] && [navBarGradientColors isKindOfClass:[NSArray class]] && navBarGradientColors.count > 0) {
+        CGRect frame = viewController.navigationController.navigationBar.bounds;
+        [self applyGradientStyle:frame];
+    }
+    
     if (navBarBackgroundColor) {
-        
         UIColor *color = navBarBackgroundColor != (id)[NSNull null] ? [RCTConvert UIColor:navBarBackgroundColor] : nil;
         viewController.navigationController.navigationBar.barTintColor = color;
-        
     } else {
         viewController.navigationController.navigationBar.barTintColor = nil;
     }
@@ -681,6 +716,9 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
     if (customNavBar && [customNavBar isKindOfClass:[RCCCustomTitleView class]]) {
         [customNavBar viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     }
+    CGRect frame = self.navigationController.navigationBar.bounds;
+    frame.size.width = size.width;
+    [self applyGradientStyle:frame];
 }
 
 
