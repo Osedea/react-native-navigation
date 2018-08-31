@@ -23,6 +23,9 @@ function _processProperties(properties) {
       if (property === 'color' || property.endsWith('Color')) {
         properties[property] = processColor(properties[property]);
       }
+      if (property === 'colors' || (property.endsWith('Colors') && properties[property] && properties[property].length)) {
+        properties[property] = properties[property].map((colorString) => processColor(colorString));
+      }
       if (property === 'buttons' || property.endsWith('Buttons')) {
         _processButtons(properties[property]);
       }
