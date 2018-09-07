@@ -331,11 +331,21 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
     return outputImage;
 }
 
--(void)applyGradientStyle:(CGRect)frame {
-    UIViewController *viewController = self;
+-(BOOL)hasGradientStyle {
+    if (!self.navigatorStyle) {
+        return NO;
+    }
+    
     NSArray *navBarGradientColors = self.navigatorStyle[@"navBarGradientColors"];
     
-    if (navBarGradientColors != (id)[NSNull null] && [navBarGradientColors isKindOfClass:[NSArray class]] && navBarGradientColors.count > 0) {
+    return navBarGradientColors && navBarGradientColors != (id)[NSNull null] && [navBarGradientColors isKindOfClass:[NSArray class]] && navBarGradientColors.count > 0;
+}
+
+-(void)applyGradientStyle:(CGRect)frame {
+    if ([self hasGradientStyle]) {
+        UIViewController *viewController = self;
+        NSArray *navBarGradientColors = self.navigatorStyle[@"navBarGradientColors"];
+        
         CAGradientLayer *gradientLayer = [CAGradientLayer layer];
         gradientLayer.bounds = frame;
         gradientLayer.colors = @[];
@@ -363,14 +373,13 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
         UIImage *image = [UIImage imageNamed: screenBackgroundImageName];
         viewController.view.layer.contents = (__bridge id _Nullable)(image.CGImage);
     }
-    
-    NSString *navBarBackgroundColor = self.navigatorStyle[@"navBarBackgroundColor"];
-    NSArray *navBarGradientColors = self.navigatorStyle[@"navBarGradientColors"];
-    
-    if (navBarGradientColors != (id)[NSNull null] && [navBarGradientColors isKindOfClass:[NSArray class]] && navBarGradientColors.count > 0) {
+
+    if ([self hasGradientStyle]) {
         CGRect frame = viewController.navigationController.navigationBar.bounds;
         [self applyGradientStyle:frame];
     }
+    
+    NSString *navBarBackgroundColor = self.navigatorStyle[@"navBarBackgroundColor"];
     
     if (navBarBackgroundColor) {
         UIColor *color = navBarBackgroundColor != (id)[NSNull null] ? [RCTConvert UIColor:navBarBackgroundColor] : nil;
@@ -716,9 +725,14 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
     if (customNavBar && [customNavBar isKindOfClass:[RCCCustomTitleView class]]) {
         [customNavBar viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     }
-    CGRect frame = self.navigationController.navigationBar.bounds;
-    frame.size.width = size.width;
-    [self applyGradientStyle:frame];
+    
+    CGFloat width = MAX(size.width, size.height);
+    
+    if (width > 0) {
+        CGRect frame = self.navigationController.navigationBar.bounds;
+        frame.size.width = width;
+        [self applyGradientStyle:frame];
+    }
 }
 
 
