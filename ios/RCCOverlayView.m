@@ -27,11 +27,53 @@
     [self setupViewConstraints:self.overlayProps bottomView:nil];
 }
 
+- (CGFloat)getExtraBottomSpace {
+    if (@available(iOS 11.0, *)) {
+        UIWindow *window = UIApplication.sharedApplication.keyWindow;
+        
+        return window.safeAreaInsets.bottom;
+    }
+    
+    return 0.0;
+}
+
+- (CGFloat)getExtraTopSpace {
+    if (@available(iOS 11.0, *)) {
+        UIWindow *window = UIApplication.sharedApplication.keyWindow;
+        
+        return window.safeAreaInsets.top;
+    }
+    
+    return 0.0;
+}
+
+- (CGFloat)getExtraLeftSpace {
+    if (@available(iOS 11.0, *)) {
+        UIWindow *window = UIApplication.sharedApplication.keyWindow;
+        
+        return window.safeAreaInsets.left;
+    }
+    
+    return 0.0;
+}
+
+- (CGFloat)getExtraRightSpace {
+    if (@available(iOS 11.0, *)) {
+        UIWindow *window = UIApplication.sharedApplication.keyWindow;
+        
+        return window.safeAreaInsets.right;
+    }
+    
+    return 0.0;
+}
+
 - (void)setupViewConstraints:(NSDictionary *)overlayProps bottomView:(UIView *)bottomView {
     NSDictionary *style = overlayProps[@"style"];
     if (style == nil) {
         style = [[NSDictionary alloc] init];
     }
+    
+    BOOL unsafe = style[@"unsafe"];
     
     self.translatesAutoresizingMaskIntoConstraints = NO; // So that we can apply the constraints below ourselves
     self.subView.translatesAutoresizingMaskIntoConstraints = YES; // Let the subview flexibly fill the parent
@@ -67,37 +109,65 @@
             constraint.active = YES;
         } else if (style[@"marginBottom"]) {
             CGFloat margin = [[style objectForKey:@"marginBottom"] doubleValue];
+            if (!unsafe) {
+                margin = margin + [self getExtraBottomSpace];
+            }
             NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1.0 constant:margin];
             constraint.active = YES;
         } else if ([align isEqualToString:@"bottom"]) {
-            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
+            CGFloat margin = 0.0;
+            if (!unsafe) {
+                margin = margin + [self getExtraBottomSpace];
+            }
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1.0 constant:margin];
             constraint.active = YES;
         }
         
         if (style[@"marginTop"]) {
             CGFloat margin = [[style objectForKey:@"marginTop"] doubleValue];
+            if (!unsafe) {
+                margin = margin + [self getExtraTopSpace];
+            }
             NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1.0 constant:margin];
             constraint.active = YES;
         } else if ([align isEqualToString:@"top"]) {
-            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0];
+            CGFloat margin = 0.0;
+            if (!unsafe) {
+                margin = margin + [self getExtraTopSpace];
+            }
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1.0 constant:margin];
             constraint.active = YES;
         }
         
         if (style[@"marginLeft"]) {
             CGFloat margin = [[style objectForKey:@"marginLeft"] doubleValue];
+            if (!unsafe) {
+                margin = margin + [self getExtraLeftSpace];
+            }
             NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1.0 constant:margin];
             constraint.active = YES;
         } else if ([align isEqualToString:@"left"]) {
-            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0];
+            CGFloat margin = 0.0;
+            if (!unsafe) {
+                margin = margin + [self getExtraLeftSpace];
+            }
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1.0 constant:margin];
             constraint.active = YES;
         }
         
         if (style[@"marginRight"]) {
             CGFloat margin = [[style objectForKey:@"marginRight"] doubleValue];
+            if (!unsafe) {
+                margin = margin + [self getExtraRightSpace];
+            }
             NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1.0 constant:margin];
             constraint.active = YES;
         } else if ([align isEqualToString:@"right"]) {
-            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1.0 constant:0.0];
+            CGFloat margin = 0.0;
+            if (!unsafe) {
+                margin = margin + [self getExtraRightSpace];
+            }
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.superview attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1.0 constant:margin];
             constraint.active = YES;
         }
     }
