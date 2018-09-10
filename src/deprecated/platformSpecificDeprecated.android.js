@@ -858,6 +858,10 @@ function dismissOverlay() {
   newPlatformSpecific.dismissOverlay();
 }
 
+function onTitleBarBackButtonClick() {
+  newPlatformSpecific.onTitleBarBackButtonClick();
+}
+
 export default {
   startTabBasedApp,
   startSingleScreenApp,
@@ -894,4 +898,5 @@ export default {
   getLaunchArgs,
   showOverlay,
   dismissOverlay,
+  onTitleBarBackButtonClick,
 };

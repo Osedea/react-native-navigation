@@ -210,6 +210,10 @@ function dismissOverlay() {
   NativeReactModule.dismissOverlay();
 }
 
+function onTitleBarBackButtonClick() {
+  NativeReactModule.onTitleBarBackButtonClick();
+}
+
 module.exports = {
   startApp,
   push,
@@ -250,4 +254,5 @@ module.exports = {
   getLaunchArgs,
   showOverlay,
   dismissOverlay,
+  onTitleBarBackButtonClick,
 };

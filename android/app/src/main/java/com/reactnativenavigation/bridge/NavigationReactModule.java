@@ -291,4 +291,9 @@ public class NavigationReactModule extends ReactContextBaseJavaModule {
     public void dismissOverlay() {
         NavigationCommandsHandler.dismissOverlay();
     }
+
+    @ReactMethod
+    public void onTitleBarBackButtonClick() {
+        NavigationCommandsHandler.onTitleBarBackButtonClick();
+    }
 }

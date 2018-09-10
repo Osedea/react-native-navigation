@@ -201,6 +201,10 @@ function dismissOverlay() {
   return platformSpecific.dismissOverlay(firstTabControllerID);
 }
 
+function onTitleBarBackButtonClick() {
+  return platformSpecific.onTitleBarBackButtonClick();
+}
+
 export default {
   getRegisteredScreen,
   getCurrentlyVisibleScreenId,
@@ -223,4 +227,5 @@ export default {
   getLaunchArgs,
   showOverlay,
   dismissOverlay,
+  onTitleBarBackButtonClick,
 };

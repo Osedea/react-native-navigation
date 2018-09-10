@@ -215,6 +215,10 @@ class Navigator {
 
     return platformSpecific.dismissOverlay(controllerID);
   }
+
+  onTitleBarBackButtonClick() {
+    return platformSpecific.onTitleBarBackButtonClick();
+  }
 }
 
 class Screen extends Component {
