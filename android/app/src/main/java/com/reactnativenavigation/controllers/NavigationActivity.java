@@ -452,6 +452,10 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
         }
     }
 
+    public void onTitleBarBackButtonClick() {
+        layout.onTitleBarBackButtonClick();
+    }
+
     @Override
     public void onEvent(Event event) {
         if (event.getType().equals(ModalDismissedEvent.TYPE)) {
